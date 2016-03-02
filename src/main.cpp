@@ -1,7 +1,9 @@
 #include <iostream>
 #include <boost/asio.hpp>
+#include <boost/thread.hpp>
 #include <unistd.h>
 #include <cstdlib>
+#include <boost/bind.hpp>
 
 #include "../headers/Server.h"
 
@@ -52,9 +54,20 @@ int main(int argc, char** argv)
         rootDir += '/';
     }
 
-    boost::asio::io_service io_service;
-    Server server(io_service, host, port, rootDir);
-    io_service.run();
+    boost::asio::io_service service;
+    Server server(service, host, port, rootDir);
+
+    std::vector<boost::shared_ptr<boost::thread>> threads;
+    for (std::size_t i = 0; i < 4; ++i)
+    {
+      boost::shared_ptr<boost::thread> thread(new boost::thread(
+              boost::bind(&boost::asio::io_service::run, &service)));
+      threads.push_back(thread);
+    }
+
+    for (std::size_t i = 0; i < threads.size(); ++i) {
+      threads[i]->join();
+    }
 
     return EXIT_SUCCESS;
 }
