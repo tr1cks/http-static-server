@@ -24,7 +24,7 @@ void daemonize() {
 
 int main(int argc, char** argv)
 {
-//    daemonize();
+    daemonize();
 
     std::string host;
     short port;
