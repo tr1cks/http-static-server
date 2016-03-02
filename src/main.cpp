@@ -24,7 +24,7 @@ void daemonize() {
 
 int main(int argc, char** argv)
 {
-    daemonize();
+//    daemonize();
 
     std::string host;
     short port;
@@ -46,6 +46,10 @@ int main(int argc, char** argv)
                 break;
         }
         opt = getopt(argc, argv, "h:p:d:");
+    }
+
+    if(rootDir.back() != '/') {
+        rootDir += '/';
     }
 
     boost::asio::io_service io_service;
